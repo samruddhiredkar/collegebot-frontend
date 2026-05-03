@@ -204,3 +204,60 @@ pre {
   margin: 10px 0;
   overflow-x: auto;
 }
+
+
+/* =========================================
+   MOBILE RESPONSIVENESS (PHONES & TABLETS)
+   ========================================= */
+
+/* The Hamburger Button (Hidden on laptops) */
+.menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin-right: 15px;
+  color: #2D3748;
+}
+
+@media (max-width: 768px) {
+  /* Show the hamburger menu on phones */
+  .menu-btn {
+    display: block; 
+  }
+
+  /* Make sidebar slide off-screen by default */
+  .sidebar {
+    position: absolute;
+    z-index: 1000;
+    height: 100%;
+    transform: translateX(-100%); 
+    transition: transform 0.3s ease-in-out;
+    box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+    background: rgba(255, 255, 255, 0.85); /* Slightly less see-through on mobile */
+  }
+
+  /* When the 'open' class is added, slide it back in */
+  .sidebar.open {
+    transform: translateX(0); 
+  }
+
+  /* Shrink header text to fit mobile */
+  .chat-header {
+    padding: 15px 20px;
+  }
+  
+  .chat-header h1 {
+    font-size: 1.2rem;
+  }
+
+  /* Give chat bubbles more room on small screens */
+  .message-bubble {
+    max-width: 95%; 
+  }
+
+  .input-area {
+    padding: 15px;
+  }
+}
