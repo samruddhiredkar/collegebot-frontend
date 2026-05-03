@@ -108,7 +108,6 @@ function App() {
               <p>Engineering Study Assistant</p>
             </div>
           </div>
-          <span className="status-badge">Groq Active</span>
         </header>
 
         <div className="chat-window">
