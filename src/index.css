@@ -1,0 +1,31 @@
+/* GLOBAL RESET */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100%;
+  font-family: 'Inter', -apple-system, sans-serif;
+  overflow: hidden; /* Keeps the background from scrolling */
+  
+  /* PASTEL MOVING GRADIENT */
+  background: linear-gradient(-45deg, #D4FC79, #96E6A1, #A1C4FD, #C2E9FB);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+}
+
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+}

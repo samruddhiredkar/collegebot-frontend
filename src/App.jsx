@@ -1,0 +1,136 @@
+import React, { useState, useEffect, useRef } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import './App.css';
+
+function App() {
+  const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [messages, setMessages] = useState([
+    { text: "👋 Hi! I'm your **CollegeBot**. What engineering topic are we tackling?", sender: 'bot' }
+  ]);
+  
+  // Dynamic Chat History State
+  const [chatHistory, setChatHistory] = useState([]);
+
+  const messagesEndRef = useRef(null);
+  const scrollToBottom = () => { messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }); };
+  useEffect(() => { scrollToBottom(); }, [messages]);
+
+  // SMART RESET: Starts a new chat and archives the old one only if it's not empty
+  const startNewChat = () => {
+    // Check if there's an actual conversation worth saving
+    if (messages.length <= 1) {
+      return; // Do nothing if it's just the initial greeting
+    }
+
+    // Archive the current chat
+    const firstUserMsg = messages.find(m => m.sender === 'user')?.text || "New Discussion";
+    const shortTitle = firstUserMsg.substring(0, 25) + (firstUserMsg.length > 25 ? "..." : "");
+    
+    const newHistoryItem = {
+      id: Date.now(),
+      title: shortTitle,
+      fullConversation: [...messages]
+    };
+    
+    setChatHistory(prev => [newHistoryItem, ...prev]);
+    
+    // Clear the UI for the new session
+    setMessages([{ text: "🚀 Ready for a new topic! What's on your mind?", sender: 'bot' }]);
+  };
+
+  // Loads a past chat from the sidebar back into the main window
+  const loadPastChat = (historyItem) => {
+    setMessages(historyItem.fullConversation);
+  };
+
+  const sendMessage = async () => {
+    if (!input.trim()) return;
+    
+    const userMsg = { text: input, sender: 'user' };
+    const currentMessages = [...messages, userMsg];
+    setMessages(currentMessages);
+    setInput('');
+    setLoading(true);
+
+    try {
+      // Calling your FastAPI backend
+      const response = await fetch(`https://collegebot-backend-7heg.onrender.com/ask?question=${encodeURIComponent(input)}`);
+      const data = await response.json();
+      
+      const botMsg = { text: data.answer, sender: 'bot' };
+      setMessages((prev) => [...prev, botMsg]);
+    } catch (error) {
+      setMessages((prev) => [...prev, { text: "❌ **Error:** Connection failed. Make sure your backend is running!", sender: 'bot' }]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="app-layout">
+      {/* SIDEBAR */}
+      <aside className="sidebar">
+        <button className="new-chat-btn" onClick={startNewChat}>+ New Chat</button>
+        <div className="history-section">
+          <h3>Recent History</h3>
+          <div className="history-list">
+            {chatHistory.length === 0 && <p className="empty-history">No history yet</p>}
+            {chatHistory.map((item) => (
+              <div key={item.id} className="history-item" onClick={() => loadPastChat(item)}>
+                💬 {item.title}
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="sidebar-footer">v2.0</div>
+      </aside>
+
+      {/* MAIN CHAT AREA */}
+      <main className="app-container">
+        <header className="chat-header">
+          <div className="header-info">
+            <h1>CollegeBot</h1>
+            <p>Engineering Study Assistant</p>
+          </div>
+          <span className="status-badge">Groq Active</span>
+        </header>
+
+        <div className="chat-window">
+          <div className="chat-content-centered">
+            {messages.map((msg, index) => (
+              <div key={index} className={`message-wrapper ${msg.sender}`}>
+                <div className={`message-bubble ${msg.sender}`}>
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.text}</ReactMarkdown>
+                </div>
+              </div>
+            ))}
+            {loading && (
+              <div className="message-wrapper bot">
+                <div className="message-bubble bot">Thinking... 🧠</div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+        </div>
+
+        {/* INPUT BAR */}
+        <div className="input-area">
+          <div className="input-wrapper">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+              placeholder="Ask about Digital Electronics, C, or AI..."
+            />
+            <button className="send-btn" onClick={sendMessage} disabled={loading}>Send</button>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}
+
+export default App;
