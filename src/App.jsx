@@ -12,6 +12,9 @@ function App() {
   
   // Dynamic Chat History State
   const [chatHistory, setChatHistory] = useState([]);
+  
+  // NEW: Mobile Sidebar State
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const messagesEndRef = useRef(null);
   const scrollToBottom = () => { messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }); };
@@ -19,9 +22,12 @@ function App() {
 
   // SMART RESET: Starts a new chat and archives the old one only if it's not empty
   const startNewChat = () => {
+    // Close sidebar on mobile even if empty
+    setIsSidebarOpen(false);
+
     // Check if there's an actual conversation worth saving
     if (messages.length <= 1) {
-      return; // Do nothing if it's just the initial greeting
+      return; 
     }
 
     // Archive the current chat
@@ -43,6 +49,8 @@ function App() {
   // Loads a past chat from the sidebar back into the main window
   const loadPastChat = (historyItem) => {
     setMessages(historyItem.fullConversation);
+    // NEW: Close sidebar on mobile after clicking a history item
+    setIsSidebarOpen(false);
   };
 
   const sendMessage = async () => {
@@ -70,8 +78,8 @@ function App() {
 
   return (
     <div className="app-layout">
-      {/* SIDEBAR */}
-      <aside className="sidebar">
+      {/* SIDEBAR - Updated with dynamic class for mobile */}
+      <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
         <button className="new-chat-btn" onClick={startNewChat}>+ New Chat</button>
         <div className="history-section">
           <h3>Recent History</h3>
@@ -89,10 +97,16 @@ function App() {
 
       {/* MAIN CHAT AREA */}
       <main className="app-container">
+        {/* HEADER - Updated with Hamburger Menu Button */}
         <header className="chat-header">
-          <div className="header-info">
-            <h1>CollegeBot</h1>
-            <p>Engineering Study Assistant</p>
+          <div className="header-info" style={{ display: 'flex', alignItems: 'center' }}>
+            <button className="menu-btn" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
+              ☰
+            </button>
+            <div>
+              <h1>CollegeBot</h1>
+              <p>Engineering Study Assistant</p>
+            </div>
           </div>
           <span className="status-badge">Groq Active</span>
         </header>
