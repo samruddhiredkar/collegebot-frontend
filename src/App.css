@@ -136,6 +136,11 @@
   box-shadow: 0 4px 6px rgba(0,0,0,0.02);
 }
 
+.message-wrapper {
+  display: flex;
+  width: 100%;
+}
+
 .bot .message-bubble {
   background: white;
   color: #2D3748;
@@ -248,10 +253,7 @@ pre {
     font-size: 1.2rem;
   }
 
-  /* Give chat bubbles more room on small screens */
-  .message-bubble {
-    max-width: 95%; 
-  }
+
 
   .input-area {
     padding: 10px 15px;
