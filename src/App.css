@@ -337,3 +337,33 @@ pre {
   box-shadow: 0 4px 12px rgba(90, 103, 216, 0.2);
 }
 
+/* Styling for Markdown Tables */
+.message-bubble table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 15px 0;
+  font-family: 'Courier New', Courier, monospace; /* Makes logic bits easier to read */
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.message-bubble th {
+  background-color: #5A67D8; /* Your theme purple */
+  color: white;
+  padding: 10px;
+  border: 1px solid #cbd5e0;
+}
+
+.message-bubble td {
+  padding: 10px;
+  border: 1px solid #cbd5e0;
+  text-align: center;
+  color: #2D3748;
+}
+
+/* Zebra striping for easy reading */
+.message-bubble tr:nth-child(even) {
+  background-color: #f7fafc;
+}
+
