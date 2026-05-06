@@ -9,7 +9,12 @@ function App() {
   const [messages, setMessages] = useState([
     { text: "👋 Hi! I'm your **CollegeBot**. What engineering topic are we tackling?", sender: 'bot' }
   ]);
-  
+
+  const SUGGESTIONS = [
+  "Explain Pointers in C", 
+  "Digital Electronics Module 3", 
+  "Physics Lab Viva Questions"
+  ];
   // Dynamic Chat History State
   const [chatHistory, setChatHistory] = useState([]);
   
@@ -53,6 +58,11 @@ function App() {
     setIsSidebarOpen(false);
   };
 
+  const handleSuggestion = (text) => {
+  setInput(text);
+  };
+  
+
   const sendMessage = async () => {
     if (!input.trim()) return;
     
@@ -62,6 +72,7 @@ function App() {
     setInput('');
     setLoading(true);
 
+    
     try {
       // Calling your FastAPI backend
       const response = await fetch(`https://collegebot-backend-7heg.onrender.com/ask?question=${encodeURIComponent(input)}`);
@@ -92,7 +103,13 @@ function App() {
             ))}
           </div>
         </div>
-        <div className="sidebar-footer">v2.0</div>
+        <div className="sidebar-footer">
+          <div className="api-status">
+            <span className="status-dot"></span>
+            <span>Llama-3-Groq Online</span>
+          </div>
+          <div className="version-tag">v2.0</div>
+        </div>
       </aside>
 
       {/* MAIN CHAT AREA */}
@@ -122,6 +139,15 @@ function App() {
             {loading && (
               <div className="message-wrapper bot">
                 <div className="message-bubble bot">Thinking... 🧠</div>
+              </div>
+            )}
+            {messages.length <= 1 && (
+              <div className="suggestions-container">
+                {SUGGESTIONS.map((text, i) => (
+                <button key={i} className="suggestion-chip" onClick={() => handleSuggestion(text)}>
+                  {text}
+                </button>
+              ))}
               </div>
             )}
             <div ref={messagesEndRef} />
