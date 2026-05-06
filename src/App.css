@@ -156,6 +156,19 @@
   align-self: flex-end;
 }
 
+.message-bubble img {
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  display: block;
+  margin: 10px auto;
+  border-radius: 12px;
+  border: 2px solid #5A67D8; /* Matches your theme */
+  background: white;
+  padding: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
 .message-wrapper.user {
   justify-content: flex-end;
 }
